@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import StatoscopePlugin from '@statoscope/webpack-plugin';
 
 import ModuleLogger from './plugins/moduleLogger';
+import UnusedModulesParser from "./plugins/unusedModulesParser";
 
 const config: webpack.Configuration = {
     mode: 'development',
@@ -22,6 +23,10 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new ModuleLogger(),
+        new UnusedModulesParser({
+            dir: './src',
+            exceptions: ['.html']
+        }),
         new StatoscopePlugin({
             saveStatsTo: 'stats.json',
             saveOnlyStats: false,
