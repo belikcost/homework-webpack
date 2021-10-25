@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "npm run build_webpack && npm run validate && rm -rf stats.json",
-    "build_webpack": "rm -rf ./dist && webpack --mode=production --node-env=production",
+    "build": "npm run build_webpack && npm run validate",
+    "build_webpack": "webpack --mode=production --node-env=production",
     "validate": "npx statoscope validate -i stats.json --config=./statoscope.config.js"
   },
   "author": "",
