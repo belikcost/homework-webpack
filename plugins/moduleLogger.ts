@@ -5,12 +5,9 @@ class ModuleLogger {
         compiler.hooks.normalModuleFactory.tap(
             'ModuleLogger',
             (normalModuleFactory) => {
-                normalModuleFactory.hooks.module.tap('ModuleLogger', (_module, _createData, resolveData) => {
-                    // @ts-ignore
+                normalModuleFactory.hooks.module.tap('ModuleLogger', (_module, _createData: { resource: string }, resolveData) => {
                     console.log(_createData.resource);
-
                     console.log(resolveData.context);
-
                     return _module;
                 });
             }

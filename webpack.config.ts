@@ -1,12 +1,12 @@
-import * as path from 'path';
-import * as webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import webpack from 'webpack';
 import StatoscopePlugin from '@statoscope/webpack-plugin';
 
 import ModuleLogger from './plugins/moduleLogger';
+import UnusedModulesParser from "./plugins/unusedModulesParser";
 
 const config: webpack.Configuration = {
-    mode: 'production',
+    mode: 'development',
     entry: {
         root: './src/pages/root.tsx',
         root2: './src/pages/root2.tsx',
@@ -14,23 +14,47 @@ const config: webpack.Configuration = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].js',
+        clean: true
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
     },
     plugins: [
-        new HtmlWebpackPlugin(),
         new ModuleLogger(),
+        new UnusedModulesParser({
+            dir: './src',
+            exceptions: ['.html']
+        }),
         new StatoscopePlugin({
             saveStatsTo: 'stats.json',
             saveOnlyStats: false,
             open: false,
-        }),
+        })
     ],
     resolve: {
         fallback: {
-            "buffer": require.resolve("buffer"),
-            "stream": false,
+            buffer: require.resolve('buffer'),
+            stream: false,
         },
+        alias: {
+            'bn.js': false,
+            'crypto-browserify': false,
+        },
+        extensions: ['.tsx', '.ts', '.js'],
     },
     module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                options: {
+                    transpileOnly: true
+                }
+            },
+        ],
     },
 };
 
